@@ -2,15 +2,16 @@ name: Publish production
 
 on:
   workflow_dispatch:
-    increment:
-      description: 'major|minor|patch'
-      options:
-        - patch
-        - minor
-        - major
-      required: true
-      type: choice
-      default: 'minor'
+    inputs:
+      increment:
+        description: 'major|minor|patch'
+        options:
+          - patch
+          - minor
+          - major
+        required: true
+        type: choice
+        default: 'minor'
 jobs:
   publish:
     name: Publish production
