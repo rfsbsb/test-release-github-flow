@@ -30,15 +30,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Extract version from package.json
-        id: extract-version
-        run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_OUTPUT
-
       - name: Prepare release
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          TYPE_ARG: ${{ fromJSON('{"":"", "auto":"", "patch":"--patch", "minor":"--minor", "major":"--major"}')[github.event.inputs.increment] }}
-        run: npm run release -- --ci --verbose $TYPE_ARG
+        run: npm run release -- --ci --verbose --increment=${{ github.event.inputs.increment }}
+
+      - name: Extract version from package.json
+        id: extract-version
+        run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_OUTPUT
 
       - name: Publish Docker image
         run: |
