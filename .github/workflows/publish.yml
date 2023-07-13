@@ -59,16 +59,28 @@ jobs:
         run: npm install
 
       - name: Tag and do dev release
-        id: tagging-version
+        id: tagging-version-dev
+        if: ${{ github.event.inputs.environment == 'dev' || github.event.inputs.environment == 'both' || github.event.inputs.environment == '' }}
         run: |
-          npm run release --silent -- --ci --no-github --patch --config=.release-it-pre.json --preRelease=pre-release
-          echo "RELEASE_VERSION=$(npm run release --silent -- --ci --release-version  --no-github --patch --preRelease=pre-release)" >> $GITHUB_OUTPUT
+          npm run release --silent -- --ci --no-github --patch --config=.release-it-pre.json --preRelease=dev
+          echo "RELEASE_VERSION=$(npm run release --silent -- --ci --release-version  --no-github --patch --preRelease=dev)" >> $GITHUB_OUTPUT
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Tag and do staging release
+        id: tagging-version-staging
+        if: ${{ github.event.inputs.environment == 'staging' || github.event.inputs.environment == 'both' || github.event.inputs.environment == '' }}
+        run: |
+          npm run release --silent -- --ci --no-github --patch --config=.release-it-pre.json --preRelease=staging
+          echo "RELEASE_VERSION=$(npm run release --silent -- --ci --release-version  --no-github --patch --preRelease=staging)" >> $GITHUB_OUTPUT
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Publish Docker image
         run: |
-          echo "Docker Image published to ${{ env.DEPLOY_ENV }} with ${{ steps.tagging-version.outputs.RELEASE_VERSION }}"
+          echo "Docker Image published to ${{ env.DEPLOY_ENV }} with ${{ steps.tagging-version-dev.outputs.RELEASE_VERSION }}"
+          echo "Docker Image published to ${{ env.DEPLOY_ENV }} with ${{ steps.tagging-version-staging.outputs.RELEASE_VERSION }}"
       - name: Deploy Image
         run: |
-          echo "Deploy image executed to ${{ env.DEPLOY_ENV }} with ${{ steps.tagging-version.outputs.RELEASE_VERSION }}"
+          echo "Deploy image executed to ${{ env.DEPLOY_ENV }} with ${{ steps.tagging-version-dev.outputs.RELEASE_VERSION }}"
+          echo "Deploy image executed to ${{ env.DEPLOY_ENV }} with ${{ steps.tagging-version-staging.outputs.RELEASE_VERSION }}"
