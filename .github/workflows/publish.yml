@@ -61,8 +61,8 @@ jobs:
       - name: Tag and do dev release
         id: tagging-version
         run: |
-          npm run release --silent -- --ci --no-github --patch --config=.release-it-pre.json --preRelease=pre-release
-          echo "RELEASE_VERSION=$(npm run release --silent -- --ci --release-version  --no-github --patch --preRelease=pre-release)" >> $GITHUB_OUTPUT
+          npm run release --silent -- --ci --no-git.push --no-git.commit --no-github --patch --config=.release-it-pre.json --preRelease=pre-release
+          echo "RELEASE_VERSION=$(npm run release --silent -- --no-git.push --no-git.commit --ci --release-version  --no-github --patch --preRelease=pre-release)" >> $GITHUB_OUTPUT
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
