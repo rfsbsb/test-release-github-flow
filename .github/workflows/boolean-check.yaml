@@ -18,7 +18,7 @@ on:
 jobs:
   publish-candidate:
     runs-on: [self-hosted, default]
-    if: ${{ github.event.inputs.confirmation }} == true
+    if: ${{ github.event.inputs.confirmation == 'true' }} 
     steps:
       - uses: actions/checkout@v3
       - name: Print confirmation for debug
