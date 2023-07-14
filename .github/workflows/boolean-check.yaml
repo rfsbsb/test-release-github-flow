@@ -1,0 +1,25 @@
+name: Boolean check
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: 'major|minor|patch'
+        options:
+          - patch
+          - minor
+          - major
+        required: true
+        type: choice
+        default: 'minor'
+      confirmation:
+        type: boolean
+        description: Confirm you want to deploy to production
+        required: true
+jobs:
+  publish-candidate:
+    runs-on: [self-hosted, default]
+    if: ${{ github.event.inputs.confirmation }} == true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Print confirmation for debug
+        run: echo confirmation=${{ github.event.inputs.confirmation }}
