@@ -13,7 +13,7 @@ on:
         default: 'minor'
       confirmation:
         type: boolean
-        description: Confirm you want to deploy to production
+        description: ⚠️💥 Confirm you want to deploy to production
         required: true
 jobs:
   publish-candidate:
