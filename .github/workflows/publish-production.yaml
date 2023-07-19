@@ -21,19 +21,21 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
+          persist-credentials: false
           token: ${{secrets.PUBLISH_TOKEN}}          
 
       - name: git config
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git remote set-url origin https://x-access-token/:${{ secrets.PUBLISH_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Install dependencies
         run: npm install
 
       - name: Prepare release
         env:
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          RELEASE_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         run: npm run release -- --ci --verbose --increment=${{ github.event.inputs.increment }}
 
       - name: Extract version from package.json
